@@ -68,7 +68,6 @@ def main() -> None:
         log_normalize_astf=config.get("log_normalize_astf", True),
         log_normalize_input=config.get("log_normalize_input", True),
         augmentation_params=augmentation_params,
-        model_name=config.get("model_name", ""),
     )
 
     # Build optimizer and scheduler factories from config

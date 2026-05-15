@@ -143,7 +143,7 @@ class SeismicDataModule(pl.LightningDataModule):
             shuffle=True,
             pin_memory=True,
             drop_last=True,
-            persistent_workers=True,
+            persistent_workers=self.num_workers > 0,
         )
 
     def val_dataloader(self) -> DataLoader:

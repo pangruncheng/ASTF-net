@@ -99,6 +99,7 @@ def _build_from_config(cls: Callable[..., nn.Module], config: Dict[str, Any]) ->
 def _ensure_registrations() -> None:
     """Import backbone modules so ``@register_backbone`` decorators run."""
     import astfnet.models.cnn  # noqa: F401
+    import astfnet.models.crdnn  # noqa: F401
     import astfnet.models.transformer  # noqa: F401
     import astfnet.models.unet1d  # noqa: F401
 

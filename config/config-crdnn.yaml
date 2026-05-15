@@ -1,0 +1,73 @@
+# ASTF-net CRDNN training configuration
+
+tb_output_dir: ".sdev/output/"
+tb_exp_name: "crdnn_dev"
+
+# Dataset — data_path must be supplied via --data CLI argument
+batch_size: 4096
+num_workers: 16
+log_normalize_astf: false
+log_normalize_input: true
+
+# Data augmentations
+augmentations:
+  - AddRandomNoise:
+      noise_level: 0.1
+  - DropRegion:
+      max_drop_length: 10
+  - AddTrend:
+      min_deg: -1
+      max_deg: 1
+  - RandomShift:
+      max_shift: 10
+
+max_augmentations: 1
+
+# Model hyperparameters
+model_name: "crdnn"
+loss: "mse"
+max_epochs: 100
+device: "gpu"
+gpus: [0]
+
+# Data input and output
+in_channels: 2
+output_length: 256
+
+# CRDNN-specific
+cnn_channels: [64, 128]
+cnn_kernel_size: 5
+cnn_pool_size: 2
+rnn_name: "GRU"
+rnn_hidden_size: 128
+rnn_layers: 2
+rnn_bidirectional: true
+dnn_hidden_size: 256
+dnn_layers: 1
+dropout: 0.1
+
+# Optimizer — forwarded to OptimizerFactory.from_config()
+# Supported names: Adam, AdamW
+optimizer:
+  name: Adam
+  lr: 0.0001
+
+# Callbacks configuration
+callbacks:
+  early_stopping:
+    monitor: "val/loss_epoch"
+    mode: "min"
+    patience: 10
+    min_delta: 0.0
+    verbose: true
+  lr_scheduler:
+    name: ReduceLROnPlateau
+    monitor: "val/loss_epoch"
+    mode: "min"
+    factor: 0.5
+    patience: 10
+  model_checkpoint:
+    monitor: "val/loss_epoch"
+    mode: "min"
+    save_top_k: 1
+    filename: "best-{epoch:02d}-{val_loss_epoch:.4f}"
